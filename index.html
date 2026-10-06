@@ -1,274 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!doctype html>
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: cadetblue;
-      overflow: hidden;
-    }
-
-    .infinite {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      background: #525252;
-      transform-origin: bottom;
-      border-top: 20px solid white;
-      border-bottom: 20px solid white;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      /* Dikey düzenleme */
-      justify-content: space-between
-    }
-
-    .infinite .whiteLine {
-      content: '';
-      transform: translateX(-50%);
-      left: 0;
-
-      width: 200%;
-      height: 10px;
-      background: linear-gradient(90deg, #fff 0%, #fff 70%, #525252 70%, #525252 100%);
-      background-size: 120px;
-      animation: animate 1s linear infinite;
-    }
-
-
-
-    @keyframes animate {
-      0% {
-        background-position: 0px;
-      }
-
-      100% {
-        background-position: -120px;
-      }
-    }
-
-
-    .myCar {
-      position: absolute;
-      z-index: 100;
-      text-align: center;
-    }
-
-    .car {
-      position: absolute;
-    }
-
-    .animation {
-      -webkit-transition: all 100ms ease-in-out;
-      -moz-transition: all 100ms ease-in-out;
-      -o-transition: all 100ms ease-in-out;
-      transition: all 100ms ease-in-out;
-    }
-
-    .point {
-      position: absolute;
-      top: 0;
-      right: 10%;
-      background-color: #ffffff7a;
-      width: 100px;
-      text-align: center;
-      padding: 10px;
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0c16">
+  <meta name="description" content="Neon asfalt, gece sürüşü ve sınırsız heyecan. Arabanı seç, nitroyu aç ve 3D otoyolda rekorunu kır.">
+  <title>MIDNIGHT RUN — 3D Otoyol Yarışı</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./game.js"></script>
 </head>
-
 <body>
-  <div class="infinite">
-    <div id="point" class="point"> 0 </div>
-    <div></div>
-    <div class="whiteLine"></div>
-    <div class="whiteLine"></div>
-    <div id="mycar1" car_name="Araç 1" is_car="true" style="bottom: 41%;left: 5%;" class="animation myCar">
-      <img src="/white.png" width="250" alt="">
-    </div>
-    <div id="mycar2" car_name="Araç 2" is_car="true" style="bottom: 76%;left: 5%;" class="animation myCar">
-      <img src="/white.png" width="250" alt="">
+  <canvas id="world" aria-label="Üç boyutlu gece otoyolu yarış sahnesi"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Midnight Run ana sayfa"><span class="brand-mark">M<span>R</span></span><span>MIDNIGHT<span class="brand-light">RUN</span><small>AFTER DARK. FULL THROTTLE.</small></span></a>
+    <div class="header-actions"><span class="live-tag"><i></i> WEBGL 3D</span><button id="sound" class="icon-button" aria-label="Sesi aç" aria-pressed="false">SES <span id="sound-state">KAPALI</span></button></div>
+  </header>
 
-    </div>
-    <div class="otherCars" id="ways">
-    </div>
-  </div>
+  <main id="garage" class="garage">
+    <section class="intro">
+      <div class="eyebrow"><span></span> GECE SENİN. YOL SENİN.</div>
+      <h1>ŞEHRİ GERİDE BIRAK.<br><em>SINIRLARI AŞ.</em></h1>
+      <p>Neon ışıkların altında sonsuz bir otoyol.<br>Arabanı seç. Trafiği geç. Kendi rekoruna meydan oku.</p>
+      <div class="intro-stats"><div><strong>03</strong><span>ÖZEL ARAÇ</span></div><div><strong>∞</strong><span>SONSUZ OTOYOL</span></div><div><strong>3D</strong><span>GERÇEK SÜRÜŞ</span></div></div>
+    </section>
+    <section class="garage-panel" aria-labelledby="garage-title">
+      <div class="section-heading"><h2 id="garage-title"><span>01 /</span> GARAJIN</h2><span class="muted">SÜRÜŞ TARZINI SEÇ</span></div>
+      <div id="car-options" class="car-options" role="group" aria-label="Araba seçimi"></div>
+      <div class="selected-details"><div><span class="eyebrow">SEÇİLİ ARAÇ</span><h3 id="car-name"></h3><p id="car-description"></p></div><span id="car-class" class="class-badge"></span></div>
+      <div id="car-specs" class="specs"></div>
+      <div class="launch-row"><button id="start" class="primary-button">YOLA ÇIK <span>↗</span></button><div class="best-block"><span>KİŞİSEL REKOR</span><strong id="garage-best">0 <small>PUAN</small></strong></div></div>
+      <p class="garage-note"><span class="status-dot"></span> Hazırsan, asfalt seni bekliyor.</p>
+    </section>
+    <footer class="garage-footer"><span>YUNUS EMRE BALOĞLU <span class="muted">/ MIDNIGHT RUN</span></span><button id="help-open" class="text-button">NASIL OYNANIR? <span>↗</span></button></footer>
+  </main>
+
+  <section id="hud" class="hud" aria-label="Yarış göstergeleri" hidden>
+    <div class="hud-top"><div class="score-panel"><span>PUAN</span><strong id="score">000000</strong><small><span id="distance">0</span> m <b>·</b> REKOR <span id="hud-best">0</span></small></div><button id="pause" class="icon-button" aria-label="Yarışı duraklat">Ⅱ <span>DURAKLAT</span></button></div>
+    <div id="race-message" class="race-message" role="status" aria-live="polite"></div>
+    <div class="hud-bottom"><div class="speed-panel"><span id="speed">0</span><small>KM/H</small><div class="speed-track"><i id="speed-bar"></i></div></div><div class="nitro-panel"><div><span>NİTRO</span><small id="nitro-label">SHIFT / BOOST</small></div><div class="nitro-track"><i id="nitro-bar"></i></div></div><span class="keyboard-hint">WASD / OK TUŞLARI <b>·</b> ESC DURAKLAT</span></div>
+    <div class="touch-controls" aria-label="Dokunmatik sürüş kontrolleri"><div><button data-control="left" aria-label="Sola dön">←</button><button data-control="right" aria-label="Sağa dön">→</button></div><div><button data-control="brake" aria-label="Fren">FREN</button><button data-control="nitro" class="boost-button" aria-label="Nitro">N₂O</button><button data-control="accelerate" aria-label="Gaz">GAZ</button></div></div>
+  </section>
+
+  <dialog id="pause-dialog" class="modal"><span class="eyebrow">BİR NEFES AL</span><h2>GECE BEKLER.</h2><p>Yarışın duraklatıldı. Hazır olduğunda kaldığın yerden devam et.</p><button id="resume" class="primary-button">DEVAM ET <span>→</span></button><button id="pause-garage" class="secondary-button">GARAJA DÖN</button></dialog>
+  <dialog id="result-dialog" class="modal"><span id="result-eyebrow" class="eyebrow">SÜRÜŞ TAMAMLANDI</span><h2>YİNE YOLA ÇIK.</h2><p id="result-reason">Trafikle çarpıştın. Bir sonraki sürüşte sınırını biraz daha aş.</p><div class="result-stats"><div><span>TOPLAM PUAN</span><strong id="result-score"></strong></div><div><span>MESAFE</span><strong id="result-distance"></strong></div></div><button id="retry" class="primary-button">TEKRAR YARIŞ <span>↗</span></button><button id="result-garage" class="secondary-button">ARAÇ DEĞİŞTİR</button></dialog>
+  <dialog id="help-dialog" class="modal"><span class="eyebrow">SÜRÜCÜ REHBERİ</span><h2>YOLU HİSSET.</h2><ul class="help-list"><li><kbd>W / ↑</kbd><span>Gaz</span></li><li><kbd>S / ↓</kbd><span>Fren</span></li><li><kbd>A D / ← →</kbd><span>Direksiyon</span></li><li><kbd>SHIFT / BOŞLUK</kbd><span>Nitro — zamanla yenilenir</span></li><li><kbd>ESC / P</kbd><span>Duraklat / devam et</span></li></ul><p>Gaz vermeden de otomatik olarak hızlanırsın. Trafiğe çarpmadan ilerle; yakın geçişler +150 puan kazandırır. Yol kenarı seni yavaşlatır. Telefonda ekran düğmelerini kullan.</p><button id="help-close" class="primary-button">ANLAŞILDI <span>✓</span></button></dialog>
+  <div id="notice" class="notice" role="status" hidden></div>
+  <noscript><div class="fatal-message">Oyunu oynamak için tarayıcında JavaScript'i etkinleştir.</div></noscript>
 </body>
-
-<script>
-
-  var speedMyCar1 = 1;
-  var speedMyCar2 = 1;
-  var speed = 1;
-  var point = 0;
-  var carPositionMYCAR1Left = 5;
-  var carPositionMYCAR2Left = 5;
-
-  var carPositionMYCAR1Bottom = 41;
-  var carPositionMYCAR2Bottom = 76;
-
-
-  function reset(message = null) {
-    carPositionMYCAR1Left = 5;
-    carPositionMYCAR2Left = 5;
-    carPositionMYCAR1Bottom = 41;
-    carPositionMYCAR2Bottom = 76;
-    speedMyCar1 = 1;
-    speedMyCar2 = 1;
-    speed = 1;
-    window.document.getElementById('mycar1').style.left = '5%';
-    window.document.getElementById('mycar2').style.left = '5%';
-
-    window.document.getElementById('mycar1').style.bottom = '41%';
-    window.document.getElementById('mycar2').style.bottom = '76%';
-
-    // window.document.getElementById('mycar1').textContent = (speed * 3 + 'KMH Mycar1')
-    // window.document.getElementById('mycar2').textContent = (speed * 3 + 'KMH Mycar2')
-    document.querySelectorAll('.whiteLine').forEach(element => {
-      element.style.animationDuration = 1 / speed + "s";
-    });
-
-    window.document.getElementById('point').innerHTML = 0;
-    point = 0;
-
-
-    window.document.getElementById('ways').innerHTML = "";
-    if (message)
-      setTimeout(() => {
-
-        alert(message);
-      }, 200);
-  }
-
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'ArrowUp') {
-      if (speedMyCar1 == 30) return
-      speedMyCar1++;
-      carPositionMYCAR1Left++;
-    }
-    if (event.key === 'ArrowDown') {
-      if (speedMyCar1 == 1) return
-      speedMyCar1--;
-      carPositionMYCAR1Left--;
-    }
-    if (event.key === 'w' || event.key === 'W') {
-      if (speedMyCar2 == 30) return
-      speedMyCar2++;
-      carPositionMYCAR2Left++;
-    }
-    if (event.key === 's' || event.key === 'S') {
-      if (speedMyCar2 == 1) return
-      speedMyCar2--;
-      carPositionMYCAR2Left--;
-    }
-
-    speed = (speedMyCar1 + speedMyCar2) / 2
-
-    if (event.key === 'ArrowRight') {
-      carPositionMYCAR1Bottom = carPositionMYCAR1Bottom - 1 * 10;
-    }
-    if (event.key === 'ArrowLeft') {
-      carPositionMYCAR1Bottom = carPositionMYCAR1Bottom + 1 * 10;
-    }
-
-    if (event.key === 'd' || event.key === 'D') {
-      carPositionMYCAR2Bottom = carPositionMYCAR2Bottom - 1 * 10;
-    }
-    if (event.key === 'a' || event.key === 'A') {
-      carPositionMYCAR2Bottom = carPositionMYCAR2Bottom + 1 * 10;
-    }
-
-    if (speed < 1) speed = 1;
-    if (speed > 30) speed = 30;
-    if (carPositionMYCAR1Bottom < 0) carPositionMYCAR1Bottom = 0
-    if (carPositionMYCAR1Bottom > 90) carPositionMYCAR1Bottom = 90
-
-    if (carPositionMYCAR2Bottom < 0) carPositionMYCAR2Bottom = 0
-    if (carPositionMYCAR2Bottom > 90) carPositionMYCAR2Bottom = 90
-
-    window.document.getElementById('mycar1').style.left = carPositionMYCAR1Left + '%';
-    window.document.getElementById('mycar2').style.left = carPositionMYCAR2Left + '%';
-
-    window.document.getElementById('mycar1').style.bottom = carPositionMYCAR1Bottom + '%';
-    window.document.getElementById('mycar2').style.bottom = carPositionMYCAR2Bottom + '%';
-
-    // window.document.getElementById('mycar1').textContent = (speed * 3 + 'KMH Mycar1')
-    // window.document.getElementById('mycar2').textContent = (speed * 3 + 'KMH Mycar2')
-    document.querySelectorAll('.whiteLine').forEach(element => {
-      element.style.animationDuration = 1 / speed + "s";
-    });
-  });
-
-  var cars = [];
-  function checkCarCollisions() {
-    cars = document.querySelectorAll('[is_car="true"]');
-    for (let i = 0; i < cars.length; i++) {
-      for (let j = i + 1; j < cars.length; j++) {
-        car1 = cars[i];
-        car2 = cars[j];
-
-        const rect1 = car1.getBoundingClientRect();
-        const rect2 = car2.getBoundingClientRect();
-
-        if (
-          rect1.bottom > rect2.top &&
-          rect1.top < rect2.bottom &&
-          rect1.right > rect2.left &&
-          rect1.left < rect2.right
-        ) {
-          reset(car1.getAttribute('car_name') + ' ile ' + car2.getAttribute('car_name') + '  Çarpıştı!! Puan = ' + point);
-        }
-      }
-    }
-  }
-  setInterval(checkCarCollisions, 100);
-
-  function randomCarView() {
-    var rows = [
-      "41",
-      "76",
-      "10",
-    ];
-    var row = rows[Math.floor(Math.random() * rows.length)];
-
-    var randomID = (Math.random() * 1000).toFixed();
-
-    window.document.getElementById('ways').innerHTML += `<div car_name="Yoldan Geçen Araç" id="${randomID}" class="animation car" style="bottom: ${row}%; right: -25%;" is_car="true"><img src="/red.png" width="250" alt=""></div> `;
-    moveCar(randomID, -25);
-
-    setTimeout(() => {
-      randomCarView()
-    }, (5000));
-
-
-  }
-  randomCarView()
-
-  function moveCar(id, right) {
-    element = window.document.getElementById(id);
-    if (!element) return;
-    if (right > 150) {
-      point++;
-      window.document.getElementById('point').innerHTML = point;
-      element.remove();
-      return;
-    }
-    element.style.right = right + '%';
-    setTimeout(() => {
-      moveCar(id, right + 1)
-    }, 100 / speed);
-  }
-
-
-</script>
-
 </html>
